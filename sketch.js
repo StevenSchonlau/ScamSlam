@@ -6,6 +6,9 @@ let w;
 let h;
 let border;
 
+let screen = 0;
+let screenDrawn = 1;
+
 let angle = 0;
 
 function updateContainer() {
@@ -26,7 +29,28 @@ function setup() {
   canvas.parent("#sketchContainer");
 }
 
+function setupScreen(screenNum) {
+  if(screenNum == 0) {
+    background('#fffff8');
+    btnStart = createButton(Start);
+    btnStart.position(w/4, h/2);
+    btnStart.size(w/2, h/8);
+    btnStart.mousePressed(startGame);
+  }
+  if(screenNum == 1){
+    background('#fffff8');
+  }
+}
+
+function startGame(){
+  screen = 1;
+}
+
 function draw() {
+  if (screen != screenDrawn){
+    setupScreen(screen);
+  }
+  /*
   translate(-width / 2, -height / 2);
 
   background('#fffff8');
@@ -65,6 +89,7 @@ function draw() {
   angle += 0.01;
 
   document.getElementById("fps").innerHTML = frameRate().toFixed(2);
+  */
 }
 
 function colorAlpha(aColor, alpha) {
