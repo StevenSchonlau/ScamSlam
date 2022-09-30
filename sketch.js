@@ -6,6 +6,8 @@ let w;
 let h;
 let border;
 
+let btnStart;
+
 let screen = 0;
 let screenDrawn = 1;
 
@@ -27,19 +29,28 @@ function setup() {
   canvas = createCanvas(w, h, WEBGL);
   smooth();
   canvas.parent("#sketchContainer");
+  btnStart = createButton('Start');
+  btnStart.position(w/2, h*1.25);
+  btnStart.size(w/2, h/8);
+  btnStart.mousePressed(startGame);
+  btnStart.hide();
 }
 
 function setupScreen(screenNum) {
   if(screenNum == 0) {
     background('#fffff8');
-    btnStart = createButton(Start);
-    btnStart.position(w/4, h/2);
-    btnStart.size(w/2, h/8);
-    btnStart.mousePressed(startGame);
+    btnStart.show();
+    screenDrawn = 0;
   }
   if(screenNum == 1){
+    clearScreen();
     background('#fffff8');
+    screenDrawn = 1;
   }
+}
+
+function clearScreen(){
+  btnStart.hide();
 }
 
 function startGame(){
