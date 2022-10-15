@@ -11,11 +11,14 @@ let screenDrawn = 1;
 
 let angle = 0;
 
-let characterX = 150;
-let characterY = 150;
+let characterX = w/2;
+let characterY = h/2;
 
 let imgCharRest1;
 let imgCharRest2;
+
+let inJump = false;
+let jumpNum = 1;
 //import { setupStartScreen } from "./start_screen";
 //import CharacterRest1, CharacterRest2 from "./assets";
 
@@ -29,6 +32,7 @@ function updateContainer() {
 
 function windowResized() {
   updateContainer();
+  setupScreen(screenNum);
   resizeCanvas(w, h);
 }
 
@@ -43,7 +47,7 @@ function setup() {
   imgCharRest2 = loadImage('assets/CharacterRest2.png'); //load rest 2
   image(imgCharRest2, 10, 10);
 }
-
+ 
 function setupScreen(screenNum) {
   if(screenNum == 0) { //start screen
     //translate(-width / 2, -height / 2);
@@ -141,6 +145,28 @@ background('#fffff8');
     rectMode("corners");
     rect(0, 0, w, h);
     rectMode("center");
+
+    if(keyIsDown(LEFT_ARROW)) {
+      characterX -= 1;
+    }
+    if(keyIsDown(RIGHT_ARROW)) {
+      characterX += 1;
+    }
+    if(keyIsDown(UP_ARROW)) {
+      characterY -= 1;
+    } 
+    if(keyIsDown(DOWN_ARROW)) {
+      characterY += 1;
+    }
+    /* trying to get gravity jump features
+    if(keyPressed(UP_ARROW) && !inJump) {
+      jumpUp(jumpNum);
+    }
+    if(inJump) {
+      jumpUp(jumpNum);
+    }
+    */
+
     image(imgCharRest1, characterX, characterY, w/15, h/9);
     /*
     if(((new Date.getTime()) % 100000) > 50000) { //trying to get time to do different things for rest
@@ -170,19 +196,22 @@ function mousePressed(){
         levelBtnHeight = h*(1/3)*j + 150;
         if(mouseX > levelBtnWidth-50 && mouseX < levelBtnWidth + 50 && mouseY > levelBtnHeight-50 && mouseY < levelBtnHeight+50){
           screen = i+2+(4*(j));  //level screens start at 2
+          characterX = w/2;
+          characterY = h/2;
         }    
       }
     }
   }
 }
-
+/*
 function keyPressed() {
   if(keyCode === "LEFT_ARROW") {
-    characterX -= 1;
+    characterX -= 5;
   } else if (keyCode === "RIGHT_ARROW") {
-    characterX += 1;
+    characterX += 5;
   }
 }
+*/
 
 function draw() {
   if (screen != screenDrawn){
@@ -205,4 +234,14 @@ function colorAlpha(aColor, alpha) {
   return color('rgba(${[red(c), green(c), blue(c), a].join(', ')})');
 }
 
+function jumpUp(x) { // a: -9.8 v: -9.8x + 10 p: -4.9x^2 + 10x + characterY
+  if(x >= 3) {
+    inJump = false;
+    jumpNum = 1;
+  } else {
+    inJump = true;
+    characterY = ((x) - (4.9*x*x) + characterY);
+    jumpNum += .1; 
+  }
+}
 
