@@ -1,4 +1,4 @@
-import { canvas, container } from "./sketch";
+import { canvas, container } from "./scripts/sketch";
 
 export function setupStartScreen () {
     //translate(-width / 2, -height / 2);

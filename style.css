@@ -14,6 +14,7 @@ body {
 	flex-flow: row;
 	justify-content: center;
 	padding-top: 10px;
+	overflow: hidden;
 }
 
 #sketchContainer {

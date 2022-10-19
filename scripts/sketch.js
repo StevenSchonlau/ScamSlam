@@ -16,6 +16,9 @@ let characterY = h/2;
 
 let imgCharRest1;
 let imgCharRest2;
+let level1Image;
+
+let collisionColor;
 
 let inJump = false;
 let jumpNum = 1;
@@ -32,8 +35,8 @@ function updateContainer() {
 
 function windowResized() {
   updateContainer();
-  setupScreen(screenNum);
   resizeCanvas(w, h);
+  setupScreen(screen);
 }
 
 function setup() {
@@ -46,6 +49,8 @@ function setup() {
   image(imgCharRest1, 10, 10);
   imgCharRest2 = loadImage('assets/CharacterRest2.png'); //load rest 2
   image(imgCharRest2, 10, 10);
+  level1Image = loadImage('assets/LEVEL1.png'); //load rest 2
+  image(level1Image, w, h);
 }
  
 function setupScreen(screenNum) {
@@ -145,19 +150,47 @@ background('#fffff8');
     rectMode("corners");
     rect(0, 0, w, h);
     rectMode("center");
-
+    
+    image(level1Image, 1, 1, w-2, h-2);
+    //image(level1Image, 1, 1);
+    image(imgCharRest1, characterX, characterY, w/15, h/9);
+    let collidingL = false;
+    let collidingR = false;
+    let collidingT = false;
+    let collidingB = false;
     if(keyIsDown(LEFT_ARROW)) {
-      characterX -= 1;
+      // for(let i = 0; i > -h/9; i--) {
+      //   print(level1Image.get((characterX-w/30), (characterY + i))[0]);
+      //   if (level1Image.get(characterX, characterY + i)[0] == 0, level1Image.get(characterX, characterY + i)[1] == 0, level1Image.get(characterX, characterY + i)[2] == 0){
+      //     collidingL = true;
+      //   }
+      // }
+        
+      stroke('#008800');
+      rectMode("center");
+      rect(characterX, characterY + parseInt(h/18), 25, h/9);
+      if(characterX > 2 && !checkColorCollision(characterX, characterY, 1, h/9)) {
+        characterX -= 2;
+      }
+      //collidingL = false;
+      
     }
     if(keyIsDown(RIGHT_ARROW)) {
-      characterX += 1;
+      if(characterX < w - w/15 - 2 && !checkColorCollision(characterX + 2*w/15, characterY, 2, h/9)) {
+        characterX += 2;
+      }
     }
     if(keyIsDown(UP_ARROW)) {
-      characterY -= 1;
+      if(characterY > 1 && !checkColorCollision(characterX , characterY - 1, w/15, 1)) {
+        characterY -= 2;
+      }
     } 
     if(keyIsDown(DOWN_ARROW)) {
-      characterY += 1;
+      if(characterY < h - h/9 - 1 && !checkColorCollision(characterX , characterY + 3 + h/9, w/15, 2)) {
+        characterY += 2;
+      }
     }
+    
     /* trying to get gravity jump features
     if(keyPressed(UP_ARROW) && !inJump) {
       jumpUp(jumpNum);
@@ -166,8 +199,7 @@ background('#fffff8');
       jumpUp(jumpNum);
     }
     */
-
-    image(imgCharRest1, characterX, characterY, w/15, h/9);
+    
     /*
     if(((new Date.getTime()) % 100000) > 50000) { //trying to get time to do different things for rest
       image(imgCharRest1, w/2, h/2, w/15, h/9); //character
@@ -179,14 +211,37 @@ background('#fffff8');
   }
 }
 
-function mousePressed(){
+function checkColorCollision(x1, y1, x2, y2) {
+  rectMode("center");
+  let halfImage = level1Image.get(((x1 - 2)*level1Image.width)/(w-2), ((y1 - 2)*level1Image.height)/(h-2), x2, y2*level1Image.height/(h-2));
+  image(halfImage, 10, 100);
+  halfImage.loadPixels();
+  for (let i = 0; i < halfImage.pixels.length; i += 4) {
+    if(halfImage.pixels[i] < 0xff || halfImage.pixels[i + 1] < 0xff || halfImage.pixels[i + 3] < 0xff) {
+      collisionColor = color(halfImage.pixels[i], halfImage.pixels[i+1], halfImage.pixels[i+2]);
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkLeft(x, y) {
+  for(let i = 0; i < h/9; i++) {
+    //print(level1Image.get((characterX-w/30), (characterY + i))[0]);
+    if (level1Image.get(characterX, characterY + i)[0] < 240 && level1Image.get(characterX, characterY + i)[1] < 240 && level1Image.get(characterX, characterY + i)[2] < 240){
+      return true;
+    }
+  }
+  return false;
+}
+
+function mousePressed(){ //buttons
   if(screen == 0) { //Start screen buttons
     //start button
     if(mouseX > w/4 && mouseX < w*(3/4) && mouseY > h/2 && mouseY < h*(5/8)){
       screen = 1;
     }
-  }
-  if(screen == 1) { //level select buttons
+  } else if(screen == 1) { //level select buttons
     if(mouseX > 10 && mouseX < 90 && mouseY > 15 && mouseY < 65){ //back button
       screen = 0;
     }
@@ -203,25 +258,14 @@ function mousePressed(){
     }
   }
 }
-/*
-function keyPressed() {
-  if(keyCode === "LEFT_ARROW") {
-    characterX -= 5;
-  } else if (keyCode === "RIGHT_ARROW") {
-    characterX += 5;
-  }
-}
-*/
 
-function draw() {
+function draw() { //draws screen number
   if (screen != screenDrawn){
     setupScreen(screen);
   }
   if(screen == 2) {
     setupScreen(screen);
-  }
-  //document.getElementById("fps").innerHTML = frameRate().toFixed(2);
-  
+  }  
 }
 
 function colorAlpha(aColor, alpha) {
@@ -234,7 +278,7 @@ function colorAlpha(aColor, alpha) {
   return color('rgba(${[red(c), green(c), blue(c), a].join(', ')})');
 }
 
-function jumpUp(x) { // a: -9.8 v: -9.8x + 10 p: -4.9x^2 + 10x + characterY
+function jumpUp(x) { // a: -9.8 v: -9.8x + 10 p: -4.9x^2 + 10x + characterY, not in use
   if(x >= 3) {
     inJump = false;
     jumpNum = 1;
