@@ -15,8 +15,11 @@ let characterX = w/2;
 let characterY = h/2;
 
 let imgCharRest1;
+let imgCharRest1Flip;
 let imgCharRest2;
 let level1Image;
+
+let flipped = false;
 
 let collisionColor;
 
@@ -47,10 +50,13 @@ function setup() {
 
   imgCharRest1 = loadImage('assets/CharacterRest1.png'); //load rest 1
   image(imgCharRest1, 10, 10);
+  imgCharRest1Flip = loadImage('assets/CharacterRest1Flip.png'); //load rest 1 flipped
+  image(imgCharRest1Flip, 10, 10);
   imgCharRest2 = loadImage('assets/CharacterRest2.png'); //load rest 2
   image(imgCharRest2, 10, 10);
   level1Image = loadImage('assets/LEVEL1.png'); //load rest 2
   image(level1Image, w, h);
+  
 }
  
 function setupScreen(screenNum) {
@@ -152,36 +158,26 @@ background('#fffff8');
     rectMode("center");
     
     image(level1Image, 1, 1, w-2, h-2);
-    //image(level1Image, 1, 1);
-    image(imgCharRest1, characterX, characterY, w/15, h/9);
-    let collidingL = false;
-    let collidingR = false;
-    let collidingT = false;
-    let collidingB = false;
-    if(keyIsDown(LEFT_ARROW)) {
-      // for(let i = 0; i > -h/9; i--) {
-      //   print(level1Image.get((characterX-w/30), (characterY + i))[0]);
-      //   if (level1Image.get(characterX, characterY + i)[0] == 0, level1Image.get(characterX, characterY + i)[1] == 0, level1Image.get(characterX, characterY + i)[2] == 0){
-      //     collidingL = true;
-      //   }
-      // }
-        
-      stroke('#008800');
-      rectMode("center");
-      rect(characterX, characterY + parseInt(h/18), 25, h/9);
-      if(characterX > 2 && !checkColorCollision(characterX, characterY, 1, h/9)) {
+    if(!flipped) {
+      image(imgCharRest1, characterX, characterY, w/15, h/9);
+    } else {
+      image(imgCharRest1Flip, characterX, characterY, w/15, h/9);
+    }
+
+    if(keyIsDown(LEFT_ARROW)) {        
+      if(characterX > 25 && !checkColorCollision(characterX, characterY, 2, h/9)) {
         characterX -= 2;
       }
-      //collidingL = false;
-      
+      flipped = false;      
     }
     if(keyIsDown(RIGHT_ARROW)) {
       if(characterX < w - w/15 - 2 && !checkColorCollision(characterX + 2*w/15, characterY, 2, h/9)) {
         characterX += 2;
       }
+      flipped = true;
     }
     if(keyIsDown(UP_ARROW)) {
-      if(characterY > 1 && !checkColorCollision(characterX , characterY - 1, w/15, 1)) {
+      if(characterY > 10 && !checkColorCollision(characterX , characterY - 1, w/15, 2)) {
         characterY -= 2;
       }
     } 
@@ -211,24 +207,14 @@ background('#fffff8');
   }
 }
 
-function checkColorCollision(x1, y1, x2, y2) {
+function checkColorCollision(x1, y1, x2, y2) { //check collision, position(x1,y1) w =x2 h =y2
   rectMode("center");
-  let halfImage = level1Image.get(((x1 - 2)*level1Image.width)/(w-2), ((y1 - 2)*level1Image.height)/(h-2), x2, y2*level1Image.height/(h-2));
-  image(halfImage, 10, 100);
+  let halfImage = level1Image.get(((x1 - 2)*level1Image.width)/(w-2), ((y1 - 2)*level1Image.height)/(h-2), x2*level1Image.width/(w-2), y2*level1Image.height/(h-2));
+  //image(halfImage, 10, 100);
   halfImage.loadPixels();
   for (let i = 0; i < halfImage.pixels.length; i += 4) {
     if(halfImage.pixels[i] < 0xff || halfImage.pixels[i + 1] < 0xff || halfImage.pixels[i + 3] < 0xff) {
       collisionColor = color(halfImage.pixels[i], halfImage.pixels[i+1], halfImage.pixels[i+2]);
-      return true;
-    }
-  }
-  return false;
-}
-
-function checkLeft(x, y) {
-  for(let i = 0; i < h/9; i++) {
-    //print(level1Image.get((characterX-w/30), (characterY + i))[0]);
-    if (level1Image.get(characterX, characterY + i)[0] < 240 && level1Image.get(characterX, characterY + i)[1] < 240 && level1Image.get(characterX, characterY + i)[2] < 240){
       return true;
     }
   }
