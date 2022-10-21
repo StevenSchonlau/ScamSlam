@@ -17,16 +17,19 @@ let characterY = h/2;
 let imgCharRest1;
 let imgCharRest1Flip;
 let imgCharRest2;
+let imgCharShoot;
+let imgCharShootFlip;
 let level1Image;
 
 let flipped = false;
+let shooting = false;
+
+const shots = [];
 
 let collisionColor;
 
 let inJump = false;
 let jumpNum = 1;
-//import { setupStartScreen } from "./start_screen";
-//import CharacterRest1, CharacterRest2 from "./assets";
 
 
 function updateContainer() {
@@ -54,6 +57,10 @@ function setup() {
   image(imgCharRest1Flip, 10, 10);
   imgCharRest2 = loadImage('assets/CharacterRest2.png'); //load rest 2
   image(imgCharRest2, 10, 10);
+  imgCharShoot = loadImage('assets/CharacterFire.png');
+  image(imgCharShoot, 10, 10);
+  imgCharShootFlip = loadImage('assets/CharacterFireFlip.png');
+  image(imgCharShootFlip, 10, 10);
   level1Image = loadImage('assets/LEVEL1.png'); //load rest 2
   image(level1Image, w, h);
   
@@ -159,11 +166,39 @@ background('#fffff8');
     
     image(level1Image, 1, 1, w-2, h-2);
     if(!flipped) {
-      image(imgCharRest1, characterX, characterY, w/15, h/9);
+      if(!shooting) {
+        image(imgCharRest1, characterX, characterY, w/15, h/9);
+      } else {
+        image(imgCharShoot, characterX, characterY, w/15, h/9);
+      }
     } else {
-      image(imgCharRest1Flip, characterX, characterY, w/15, h/9);
+      if(!shooting) {
+        image(imgCharRest1Flip, characterX, characterY, w/15, h/9);
+      } else {
+        image(imgCharShootFlip, characterX, characterY, w/15, h/9);
+      }
     }
+    for (let i = 0; i < shots.length; i+= 3) {
+      if(shots[i+2] == -1) {
+        shots[i] += 4;
+        if(shots[i] > w) {
+          shots.splice(i, 3);
+        }
+        stroke("#990000");
+        strokeWeight(2);
+        line(shots[i], shots[i+1], shots[i]+2, shots[i+1]);
+      }
+      if(shots[i+2] == -2) {
+        shots[i] -= 4;
+        if(shots[i] < 0) {
+          shots.splice(i, 3);
+        }
+        stroke("#990000");
+        strokeWeight(2);
+        line(shots[i], shots[i+1], shots[i]-2, shots[i+1]);
+      }
 
+    }
     if(keyIsDown(LEFT_ARROW)) {        
       if(characterX > 25 && !checkColorCollision(characterX, characterY, 2, h/9)) {
         characterX -= 2;
@@ -186,6 +221,19 @@ background('#fffff8');
         characterY += 2;
       }
     }
+    if(keyIsDown(ENTER) && !shooting) { //create shot in shots, need to make it hold
+      shooting = true;
+      if(flipped) {
+        shots.push(characterX + w/15, characterY+h/16, -1);
+        print("shot");
+      } else {
+        shots.push(characterX, characterY+h/16, -2);
+        print("shot");
+      }
+    } 
+    if(!keyIsDown(ENTER)){
+      shooting = false;
+    }
     
     /* trying to get gravity jump features
     if(keyPressed(UP_ARROW) && !inJump) {
@@ -206,6 +254,8 @@ background('#fffff8');
     screenDrawn = 2;
   }
 }
+
+
 
 function checkColorCollision(x1, y1, x2, y2) { //check collision, position(x1,y1) w =x2 h =y2
   rectMode("center");
