@@ -20,13 +20,17 @@ let imgCharRest2;
 let imgCharShoot;
 let imgCharShootFlip;
 let level1Image;
+let imgEnemy;
 
 let flipped = false;
 let shooting = false;
 
 const shots = [];
 
-let collisionColor;
+const levels = [];
+
+let collisionColor = '#000000';
+let greenCollide = false;
 
 let inJump = false;
 let jumpNum = 1;
@@ -63,15 +67,18 @@ function setup() {
   image(imgCharShootFlip, 10, 10);
   level1Image = loadImage('assets/LEVEL1.png'); //load rest 2
   image(level1Image, w, h);
+  imgEnemy = loadImage('assets/EnemyTransparent.png'); //load enemy
+  image(imgEnemy, 10,10); 
   
 }
  
 function setupScreen(screenNum) {
   if(screenNum == 0) { //start screen
-    //translate(-width / 2, -height / 2);
+    if (!checkLevelComplete(1)) {
+      levels.push(1);
+    }
 // background    
 background('#fffff8');
-
 // border
     stroke('#222831');
     noFill();
@@ -90,7 +97,6 @@ background('#fffff8');
     textSize(height/9);
     textAlign("center", "center");
     text('Start', w/2, h*(9/16));
-    screenDrawn = 0;
     //text
     fill('#010101');
     textFont("monospace");
@@ -118,7 +124,7 @@ background('#fffff8');
         levelBtnHeight = h*(1/3)*j + 150;
         strokeWeight(3);
         rectMode("center");
-        if(i+1+(4*(j)) == 1){ //need to have check which levels are unlocked, also add k for different menu (k = 12*menu)
+        if(checkLevelComplete(i+1+(4*(j)))){ //need to have check which levels are unlocked, also add k for different menu (k = 12*menu)
           fill('#228822');
         } else {
           fill('#dddddd');
@@ -181,8 +187,9 @@ background('#fffff8');
     for (let i = 0; i < shots.length; i+= 3) {
       if(shots[i+2] == -1) {
         shots[i] += 4;
-        if(shots[i] > w) {
-          shots.splice(i, 3);
+        if(shots[i] > w-2 || checkColorCollision(shots[i], shots[i+1], 2, 1)) {
+          line(shots[i], shots[i+1] + 3, shots[i]+2, shots[i+1] -3);
+          shots[i+2] = -3;
         }
         stroke("#990000");
         strokeWeight(2);
@@ -190,18 +197,24 @@ background('#fffff8');
       }
       if(shots[i+2] == -2) {
         shots[i] -= 4;
-        if(shots[i] < 0) {
-          shots.splice(i, 3);
+        if(shots[i] < 0 || checkColorCollision(shots[i], shots[i+1], 2, 1)) {
+          line(shots[i], shots[i+1] + 3, shots[i]+2, shots[i+1] -3);
+          shots[i+2] = -3;
         }
         stroke("#990000");
         strokeWeight(2);
         line(shots[i], shots[i+1], shots[i]-2, shots[i+1]);
       }
-
+      if(shots[i+2] == -3) {
+        shots.splice(i, 3);
+      }
     }
     if(keyIsDown(LEFT_ARROW)) {        
       if(characterX > 25 && !checkColorCollision(characterX, characterY, 2, h/9)) {
         characterX -= 2;
+      }
+      if(greenCollide){ //end level
+        screenNum = -1;
       }
       flipped = false;      
     }
@@ -209,19 +222,29 @@ background('#fffff8');
       if(characterX < w - w/15 - 2 && !checkColorCollision(characterX + 2*w/15, characterY, 2, h/9)) {
         characterX += 2;
       }
+      if(greenCollide){ //end level
+        screenNum = -1;
+      }
       flipped = true;
     }
     if(keyIsDown(UP_ARROW)) {
       if(characterY > 10 && !checkColorCollision(characterX , characterY - 1, w/15, 2)) {
         characterY -= 2;
       }
+      if(greenCollide){ //end level
+        screenNum = -1;
+      }
     } 
     if(keyIsDown(DOWN_ARROW)) {
       if(characterY < h - h/9 - 1 && !checkColorCollision(characterX , characterY + 3 + h/9, w/15, 2)) {
         characterY += 2;
       }
+      if(greenCollide){ //end level
+        screenNum = -1;
+      }
     }
-    if(keyIsDown(ENTER) && !shooting) { //create shot in shots, need to make it hold
+
+    if(keyIsDown(32) && !shooting) { //create shot in shots, need to make it hold
       shooting = true;
       if(flipped) {
         shots.push(characterX + w/15, characterY+h/16, -1);
@@ -231,7 +254,7 @@ background('#fffff8');
         print("shot");
       }
     } 
-    if(!keyIsDown(ENTER)){
+    if(!keyIsDown(32)){
       shooting = false;
     }
     
@@ -253,6 +276,47 @@ background('#fffff8');
     */
     screenDrawn = 2;
   }
+  if(screenNum == -1) { //end level screen
+    screen = -1;
+    background('#fffff8');
+    //border
+    stroke('#222831');
+    noFill();
+    strokeWeight(1);
+    rectMode("corners");
+    rect(0, 0, w, h);
+    //text
+    fill('#010101');
+    textFont("monospace");
+    strokeWeight(1);
+    textSize(height/9);
+    textAlign("center", "center");
+    text('Level Complete!', w/2, h*(3/16));
+    if(!checkLevelComplete(2)) {
+      levels.push(2);
+    }
+    strokeWeight(3);
+    rectMode("center");
+    fill('#dddddd');
+    rect(w/4, h*2/3, 200, 100);
+    fill('#010101');
+    textFont("monospace");
+    strokeWeight(1);
+    textSize(height/9);
+    textAlign("center", "center");
+    text("Home", w/4, h*2/3);
+    strokeWeight(3);
+    rectMode("center");
+    fill('#dddddd');
+    rect(w*3/4, h*2/3, 200, 100);
+    fill('#010101');
+    textFont("monospace");
+    strokeWeight(1);
+    textSize(height/9);
+    textAlign("center", "center");
+    text("Next", w*3/4, h*2/3);
+    screenDrawn = -1;
+  }
 }
 
 
@@ -262,13 +326,17 @@ function checkColorCollision(x1, y1, x2, y2) { //check collision, position(x1,y1
   let halfImage = level1Image.get(((x1 - 2)*level1Image.width)/(w-2), ((y1 - 2)*level1Image.height)/(h-2), x2*level1Image.width/(w-2), y2*level1Image.height/(h-2));
   //image(halfImage, 10, 100);
   halfImage.loadPixels();
+  greenCollide = false;
+  collide = false;
   for (let i = 0; i < halfImage.pixels.length; i += 4) {
     if(halfImage.pixels[i] < 0xff || halfImage.pixels[i + 1] < 0xff || halfImage.pixels[i + 3] < 0xff) {
-      collisionColor = color(halfImage.pixels[i], halfImage.pixels[i+1], halfImage.pixels[i+2]);
-      return true;
+      if(halfImage.pixels[i] < 0x66 && halfImage.pixels[i+1] == 255 && halfImage.pixels[i+2] < 0x66) { //need to make it so that it checks all pixels
+        greenCollide = true;
+      }
+      collide = true; //returns true before makes it to green
     }
   }
-  return false;
+  return collide;
 }
 
 function mousePressed(){ //buttons
@@ -285,19 +353,36 @@ function mousePressed(){ //buttons
       levelBtnWidth = w*(1/4)*i + 70; 
       for(j = 0; j < 2; j++){
         levelBtnHeight = h*(1/3)*j + 150;
-        if(mouseX > levelBtnWidth-50 && mouseX < levelBtnWidth + 50 && mouseY > levelBtnHeight-50 && mouseY < levelBtnHeight+50){
+        if(checkLevelComplete(i+1+(4*(j))) && mouseX > levelBtnWidth-50 && mouseX < levelBtnWidth + 50 && mouseY > levelBtnHeight-50 && mouseY < levelBtnHeight+50){
           screen = i+2+(4*(j));  //level screens start at 2
           characterX = w/2;
           characterY = h/2;
         }    
       }
     }
+  } else if(screen == -1) {
+    if (mouseX > w/4-100 && mouseY > h*2/3-100 && mouseX < w/4+100 && mouseY < h*2/3+100) {
+      screen = 1;
+    }
+    if (mouseX > w*3/4-100 && mouseY > h*2/3-100 && mouseX < w*3/4+100 && mouseY < h*2/3+100) {
+      screen = 2;
+    }
   }
+}
+
+function checkLevelComplete(levelNum) {
+  for (let i = 0; i < levels.length; i++) {
+    if(levels[i] == levelNum) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function draw() { //draws screen number
   if (screen != screenDrawn){
     setupScreen(screen);
+    print(screen);
   }
   if(screen == 2) {
     setupScreen(screen);
