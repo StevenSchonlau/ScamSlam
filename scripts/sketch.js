@@ -300,7 +300,7 @@ background('#fffff8');
     enemiesAndShoot(level2Image);
 
     if(keyIsDown(LEFT_ARROW)) {        
-      if(characterX > 25 && !checkColorCollision(level2Image, characterX, characterY, 2, h/9)) {
+      if(characterX > 25 && !checkColorCollision(level2Image, characterX-2, characterY, 2, h/9)) {
         characterX -= 2;
       }
       if(greenCollide){ //end level
@@ -456,7 +456,7 @@ function checkColorCollision(levelImg, x1, y1, x2, y2) { //check collision, posi
   collide = false;
   for (let i = 0; i < halfImage.pixels.length; i += 4) {
     if(halfImage.pixels[i] < 0xff || halfImage.pixels[i + 1] < 0xff || halfImage.pixels[i + 3] < 0xff) {
-      if(halfImage.pixels[i] < 0x66 && halfImage.pixels[i+1] == 255 && halfImage.pixels[i+2] < 0x66) {
+      if(halfImage.pixels[i] < 0x66 && halfImage.pixels[i+1] > 0x88 && halfImage.pixels[i+2] < 0x66) {
         greenCollide = true;
       }
       if(halfImage.pixels[i] > 0x88 && halfImage.pixels[i+1] < 0x88 && halfImage.pixels[i+2] < 0x88) {
