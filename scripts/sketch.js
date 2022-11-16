@@ -45,6 +45,9 @@ let enemies = false;
 let inJump = false;
 let jumpNum = 1;
 
+let pausedLevel = 0;
+let paused = false;
+
 
 function updateContainer() {
   container = select('#sketchContainer');
@@ -175,96 +178,12 @@ background('#fffff8');
     screenDrawn = 1;
   }
   if(screenNum == 2){ //level 1
-    background('#fffff8');
-    levelOn = 1;
-    stroke('#222831');
-    noFill();
-    strokeWeight(1);
-    rectMode("corners");
-    rect(0, 0, w, h);
-    rectMode("center");
-    
-    image(level1Image, 1, 1, w-2, h-2);
-    if(!flipped) {
-      if(!shooting) {
-        image(imgCharRest1, characterX, characterY, w/15, h/9);
-      } else {
-        image(imgCharShoot, characterX, characterY, w/15, h/9);
-      }
-    } else {
-      if(!shooting) {
-        image(imgCharRest1Flip, characterX, characterY, w/15, h/9);
-      } else {
-        image(imgCharShootFlip, characterX, characterY, w/15, h/9);
-      }
+    //moved
+    const level2Obj = new levelSelect();
+    if(level2Obj.drawLevel(level1Image, 1, false)) {
+      screenNum = -1;
     }
     enemiesAndShoot(level1Image);
-
-    if(keyIsDown(LEFT_ARROW)) {        
-      if(characterX > 25 && !checkColorCollision(level1Image, characterX, characterY, 2, h/9)) {
-        characterX -= 2;
-      }
-      if(greenCollide){ //end level
-        screenNum = -1;
-      }
-      flipped = false;      
-    }
-    if(keyIsDown(RIGHT_ARROW)) {
-      if(characterX < w - w/15 - 2 && !checkColorCollision(level1Image, characterX + 2*w/15, characterY, 2, h/9)) {
-        characterX += 2;
-      }
-      if(greenCollide){ //end level
-        screenNum = -1;
-      }
-      flipped = true;
-    }
-    if(keyIsDown(UP_ARROW)) {
-      if(characterY > 10 && !checkColorCollision(level1Image, characterX , characterY - 1, w/15, 2)) {
-        characterY -= 2;
-      }
-      if(greenCollide){ //end level
-        screenNum = -1;
-      }
-    } 
-    if(keyIsDown(DOWN_ARROW)) {
-      if(characterY < h - h/9 - 1 && !checkColorCollision(level1Image, characterX , characterY + 3 + h/9, w/15, 2)) {
-        characterY += 2;
-      }
-      if(greenCollide){ //end level
-        screenNum = -1;
-      }
-    }
-
-    if(keyIsDown(32) && !shooting) { //create shot in shots, need to make it hold
-      shooting = true;
-      if(flipped) {
-        shots.push(characterX + w/15, characterY+h/16, -1);
-        print("shot");
-      } else {
-        shots.push(characterX, characterY+h/16, -2);
-        print("shot");
-      }
-    } 
-    if(!keyIsDown(32)){
-      shooting = false;
-    }
-    
-    /* trying to get gravity jump features
-    if(keyPressed(UP_ARROW) && !inJump) {
-      jumpUp(jumpNum);
-    }
-    if(inJump) {
-      jumpUp(jumpNum);
-    }
-    */
-    
-    /*
-    if(((new Date.getTime()) % 100000) > 50000) { //trying to get time to do different things for rest
-      image(imgCharRest1, w/2, h/2, w/15, h/9); //character
-    } else {
-      image(imgCharRest2, w/2, h/2, w/15, h/9);
-    }
-    */
     screenDrawn = 2;
   }
   if(screenNum == 3) { //level 2
@@ -442,11 +361,49 @@ background('#fffff8');
     text("Next", w*3/4, h*2/3);
     screenDrawn = -1;
   }
+  if(screenNum == -2) {
+    screen = -2;
+    background('#fffff8');
+    //border
+    stroke('#222831');
+    noFill();
+    strokeWeight(1);
+    rectMode("corners");
+    rect(0, 0, w, h);
+    //text
+    fill('#010101');
+    textFont("monospace");
+    strokeWeight(1);
+    textSize(height/9);
+    textAlign("center", "center");
+    text('Paused', w/2, h*(3/16));
+    strokeWeight(3);
+    rectMode("center");
+    fill('#dddddd');
+    rect(w/4, h*2/3, 200, 100);
+    fill('#010101');
+    textFont("monospace");
+    strokeWeight(1);
+    textSize(height/9);
+    textAlign("center", "center");
+    text("Home", w/4, h*2/3);
+    strokeWeight(3);
+    rectMode("center");
+    fill('#dddddd');
+    rect(w*3/4, h*2/3, 200, 100);
+    fill('#010101');
+    textFont("monospace");
+    strokeWeight(1);
+    textSize(height/9);
+    textAlign("center", "center");
+    text("Resume", w*3/4, h*2/3);
+    screenDrawn = -2;
+  }
 }
 
 
 
-function checkColorCollision(levelImg, x1, y1, x2, y2) { //check collision, position(x1,y1) w =x2 h =y2
+window.checkColorCollision = function checkColorCollision(levelImg, x1, y1, x2, y2) { //check collision, position(x1,y1) w =x2 h =y2
   rectMode("center");
   let halfImage = levelImg.get(((x1 - 2)*levelImg.width)/(w-2), ((y1 - 2)*levelImg.height)/(h-2), x2*levelImg.width/(w-2), y2*levelImg.height/(h-2));
   //image(halfImage, 10, 100);
@@ -500,6 +457,16 @@ function mousePressed(){ //buttons
     }
     if (mouseX > w*3/4-100 && mouseY > h*2/3-100 && mouseX < w*3/4+100 && mouseY < h*2/3+100) {
       screen = levelOn + 2;
+    }
+  } else if(screen == -2) {
+    if (mouseX > w/4-100 && mouseY > h*2/3-100 && mouseX < w/4+100 && mouseY < h*2/3+100) {
+      screen = 1;
+      paused = false;
+    }
+    if (mouseX > w*3/4-100 && mouseY > h*2/3-100 && mouseX < w*3/4+100 && mouseY < h*2/3+100) {
+      screen = pausedLevel;
+      print(pausedLevel);
+      paused = false;
     }
   }
 }
@@ -599,6 +566,13 @@ function draw() { //draws screen number
   if(screen == 2 || screen == 3) {
     setupScreen(screen);
   }  
+  if(keyIsDown(27)) {
+    if(!paused) {
+      pausedLevel = screenDrawn;
+      screen = -2;
+      paused = true;
+    }
+  }
 }
 
 function colorAlpha(aColor, alpha) {
