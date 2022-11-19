@@ -1,42 +1,12 @@
-<p align="center">
-  <img src="assets/readme_banner.png"/>
-</p>
+#Hello!
+My name is Steven Schonlau and I am a freshman at Purdue studying computer science. This is a project I created through the Launchpad club with my mentor, Mark.
+I wanted to create something that could have a socially beneficial impact. While this project won't be used in the real world, I wanted to try my best and learn along the way.
+My project is a web-based game called Scam Slam. The goal was to enable elementary age students in identifying email scams. This is done with a moveable character that goes around an email shooting viruses that come from links.
+I used HTML, CSS, and a JavaScript plugin called [p5js](https://p5js.org/). This allowed me to make an animated game with characters that I created in MS paint.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+##Here's a video of the game in action:
 
-# Installation and Usage
+COMING SOON
 
-This repository is a template, which you can use to quickstart your own new projects. It comes with a pre-configured environment for VS Code, with suggested extensions and configurations.
-
-[GitHub - Creating a repository from a template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template)
-
-```bash
-.
-├── index.html
-├── jsconfig.json
-├── node_modules
-├── package.json
-├── sketch.js
-└── style.css
-```
-
-# Visual Studio Code Workflow
-
-Included is a `.vscode/extensions.json` file, which recommends a workspace inside Visual Studio Code with the following extensions:
-
-* [LiveServer](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
-* [p5.js snippets](https://marketplace.visualstudio.com/items?itemName=acidic9.p5js-snippets)
-* [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-* [htmlhint](https://marketplace.visualstudio.com/items?itemName=mkaufman.HTMLHint)
-
-To view your sketch, start the Live Server on VS Code. It defaults to [http://127.0.0.1:5500/](http://127.0.0.1:5500/ "http://127.0.0.1:5500/"). It supportes **live reload**, so you can edit the sketch and see the changes in near realtime, like the p5 online editor.
-
-## Intellisense
-
-Intellisense is provided via p5.js TypeScript definition files.
-
-Solution found on issue [#1339](https://github.com/processing/p5.js/issues/1339 "#1339").
-
-Instead of downloading the TypeScript definitions, we can now use this NPM package: [@types/p5](https://www.npmjs.com/package/@types/p5).
-
-# ESLint rules
-
-There are some disabled rules on `.eslintrc.json`, but they're entirely personal choices.
+##Results of this project:
+I learned a lot about reading references as I was completely new to p5js and I also learned a lot about layouts in HTML. I also learned how to modularize code more efficiently to avoid repetition.
