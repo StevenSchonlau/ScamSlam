@@ -2,6 +2,7 @@
 
 a, h1 {
 	transition: color 0.3s ease-in-out;
+	padding-left: 34%;
 }
 
 a:hover, h1:hover {
@@ -10,25 +11,52 @@ a:hover, h1:hover {
 
 body {
 	font-family: 'Goudy Bookletter 1911', serif;
-	display: flex;
+	/* display: flex;
 	flex-flow: row;
 	justify-content: center;
 	padding-top: 10px;
-	overflow: hidden;
+	overflow: hidden; */
 }
+
 
 #sketchContainer {
 	display: flex;
-	flex-flow: column;
+	flex-flow: column; 
 
 	width: 80vw;
 	height: 60vh;
-
+	float: center;
+	margin: 10px 10px 10px 10px;
 	overflow: visible;
-}​
+	flex: none;
+	align-items: center;
+}
+
+.leftText {
+	
+	flex: 0 1 auto;
+	align-items: stretch;
+	text-align: center;
+}
+
+.rightText {
+	flex: 0 1 auto;
+	align-items: stretch;
+}
+
+#contentContainer {
+	display: flex;
+	flex-flow: row;
+	float: center;
+	outline: 1px solid black;
+	width: 170vh;
+	height: 70vh;
+	justify-content: space-between;
+	gap: 5%;
+}
 
 canvas {
 	z-index: -3;
     width: 100%;
 	height: 100%;
-}
+} 

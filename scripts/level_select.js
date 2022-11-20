@@ -1,8 +1,17 @@
 class levelSelect {
-    constructor() {}
-
-    drawLevel(enemies) {
-        let backgroundImage = levelBackground[0];
+    #enemies;
+    publicBackgroundImage;
+    constructor() {
+        this.#enemies = false;
+    }
+    drawLevel(areEnemies) {
+        let backgroundImage;
+        if(!enemies || enemiesXY.length != 0){
+            backgroundImage = levelBackground[0];
+        } else if (enemies && enemiesXY.length == 0) {
+            backgroundImage = levelBackground[1];
+        }
+        this.publicBackgroundImage = backgroundImage;
         //draws level
         background('#fffff8');
         stroke('#222831');
@@ -37,6 +46,12 @@ class levelSelect {
             if(greenCollide){ //end level
                 return true;
             }
+            if(redCollide && areEnemies){
+                if(!enemies){
+                  enemiesXY.push(1, 1, -1, -1);
+                }
+                enemies = true;
+            }
             flipped = false;      
         }
         if(keyIsDown(RIGHT_ARROW)) {
@@ -45,6 +60,12 @@ class levelSelect {
             }
             if(greenCollide){ //end level
                 return true; 
+            }
+            if(redCollide && areEnemies){
+                if(!enemies){
+                  enemiesXY.push(1, 1, -1, -1);
+                }
+                enemies = true;
             }
             flipped = true;
         }
@@ -55,6 +76,12 @@ class levelSelect {
             if(greenCollide){ //end level
                 return true;
             }
+            if(redCollide && areEnemies){
+                if(!enemies){
+                  enemiesXY.push(1, 1, -1, -1);
+                }
+                enemies = true;
+            }
         } 
         if(keyIsDown(DOWN_ARROW)) {
             if(characterY < h - h/9 - 1 && !window.checkColorCollision(backgroundImage, characterX , characterY + 3 + h/9, w/15, 2)) {
@@ -62,6 +89,12 @@ class levelSelect {
             }
             if(greenCollide){ //end level
                 return true;
+            }
+            if(redCollide && areEnemies){
+                if(!enemies){
+                  enemiesXY.push(1, 1, -1, -1);
+                }
+                enemies = true;
             }
         }
 
@@ -76,5 +109,9 @@ class levelSelect {
         if(!keyIsDown(32)){
         shooting = false;
         }
+    }
+
+    getBackgroundImage() {
+        return this.publicBackgroundImage;
     }
 }
