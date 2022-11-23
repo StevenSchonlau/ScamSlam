@@ -24,6 +24,15 @@ let imgEnemy;
 let level2aImage;
 let level2bImage;
 let level2Image;
+let level3aImage;
+let level3bImage;
+let level4aImage;
+let level4bImage;
+let level5aImage;
+let level5bImage;
+let level6aImage;
+let level6bImage;
+let level7aImage;
 let enemyLimit = 8;
 let enemiesMade = 0;
 
@@ -86,6 +95,24 @@ function setup() {
   image(level2bImage, w, h);
   level2aImage = loadImage('assets/LEVEL2a.png');
   image(level2aImage, w, h);
+  level3aImage = loadImage('assets/LEVEL3a.png');
+  image(level3aImage, w, h);
+  level3bImage = loadImage('assets/LEVEL3b.png');
+  image(level3bImage, w, h);
+  level4aImage = loadImage('assets/LEVEL4a.png');
+  image(level4aImage, w, h);
+  level4bImage = loadImage('assets/LEVEL4b.png');
+  image(level4bImage, w, h);
+  level5aImage = loadImage('assets/LEVEL5a.png');
+  image(level5aImage, w, h);
+  level5bImage = loadImage('assets/LEVEL5b.png');
+  image(level5bImage, w, h);
+  level6aImage = loadImage('assets/LEVEL6a.png');
+  image(level6aImage, w, h);
+  level6bImage = loadImage('assets/LEVEL6b.png');
+  image(level6bImage, w, h);
+  level7aImage = loadImage('assets/LEVEL7a.png');
+  image(level7aImage, w, h);
   imgEnemy = loadImage('assets/EnemyTransparent.png'); //load enemy
   image(imgEnemy, 10,10); 
   
@@ -192,27 +219,79 @@ background('#fffff8');
   }
   if(screenNum == 3) { //level 2
     //background and border
+    enemyLimit = 8;
     const level2Obj = new levelSelect();
     levelBackground = [level2bImage, level2aImage];
     if(level2Obj.drawLevel(true)) { //returns true on completion
       levelOn = 2;
       screenNum = -1;
     }
-    //not repeat
-    // if(!enemies || enemiesXY.length != 0) {
-    //   image(level2bImage, 1, 1, w-2, h-2);
-    //   level2Image = level2bImage;
-    // } else if (enemies && enemiesXY.length == 0) {
-    //   image(level2aImage, 1, 1, w-2, h-2);
-    //   level2Image = level2aImage;
-    // }
-    //keep
     enemiesAndShoot(level2Obj.getBackgroundImage());
 
     screenDrawn = 3;
     
   }
-  if(screenNum == 4) { //level 3 (last)
+  if(screenNum == 4) {
+    enemyLimit = 16;
+    const level3Obj = new levelSelect();
+    levelBackground = [level3aImage, level3bImage];
+    if(level3Obj.drawLevel(true)) { //returns true on completion
+      levelOn = 3;
+      screenNum = -1;
+    }
+    enemiesAndShoot(level3Obj.getBackgroundImage());
+
+    screenDrawn = 4;
+  }
+  if(screenNum == 5) {
+    enemyLimit = 32;
+    const level4Obj = new levelSelect();
+    levelBackground = [level4aImage, level4bImage];
+    if(level4Obj.drawLevel(true)) { //returns true on completion
+      levelOn = 4;
+      screenNum = -1;
+    }
+    enemiesAndShoot(level4Obj.getBackgroundImage());
+
+    screenDrawn = 5;
+  }
+  if(screenNum == 6) {
+    enemyLimit = 64;
+    const level5Obj = new levelSelect();
+    levelBackground = [level5aImage, level5bImage];
+    if(level5Obj.drawLevel(true)) { //returns true on completion
+      levelOn = 5;
+      screenNum = -1;
+    }
+    enemiesAndShoot(level5Obj.getBackgroundImage());
+
+    screenDrawn = 6;
+  }
+  if(screenNum == 7) {
+    enemyLimit = 128;
+    const level6Obj = new levelSelect();
+    levelBackground = [level6aImage, level6bImage];
+    if(level6Obj.drawLevel(true)) { //returns true on completion
+      levelOn = 6;
+      screenNum = -1;
+    }
+    enemiesAndShoot(level6Obj.getBackgroundImage());
+
+    screenDrawn = 7;
+  }
+  if(screenNum == 8) {
+    enemyLimit = 64;
+    const level7Obj = new levelSelect();
+    levelBackground = [level7aImage];
+    if(level7Obj.drawLevel(true)) { //returns true on completion
+      levelOn = 7;
+      screenNum = -1;
+    }
+    enemiesAndShoot(level7Obj.getBackgroundImage());
+
+    screenDrawn = 8;
+  }
+  if(screenNum == 9) { //level 3 (last)
     //background and border
     background('#fffff8');
     levelOn = 2;
@@ -367,7 +446,7 @@ function mousePressed(){ //buttons
         }    
       }
     }
-  }  else if (screen == 4) {
+  }  else if (screen == 9) {
     if (mouseX > w/2-100 && mouseY > h*2/3-100 && mouseX < w/2+100 && mouseY < h*2/3+100) {
       screen = 1;
     }
@@ -482,7 +561,7 @@ function draw() { //draws screen number
     enemiesMade = 0;
     setupScreen(screen);
   }
-  if(screen == 2 || screen == 3) {
+  if(screen > 1 && screen < 9) {
     setupScreen(screen);
   }  
   if(keyIsDown(27)) {
