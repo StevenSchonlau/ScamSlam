@@ -510,7 +510,7 @@ function enemiesAndShoot(levelImg) {
       enemiesXY[i] += 5;
       if(enemiesXY[i] > w-w/15) {
         enemiesXY[i+2] = -2;
-        if(enemiesMade < enemyLimit) { //limit of viruses
+        if(enemiesMade < enemyLimit && enemiesXY[enemiesXY.length-4] != 1) { //limit of viruses
           enemiesXY.push(1, 1, -1, -1);
           enemiesMade++;
         }
