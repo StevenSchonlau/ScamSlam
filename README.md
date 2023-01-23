@@ -8,7 +8,7 @@ I used HTML, CSS, and a JavaScript plugin called [p5js](https://p5js.org/). This
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Here's a video of the game in action:
 
-COMING SOON
+[Click Here!](https://youtu.be/fI3YyUdDG4U)
 
 ## Results of this project:
 I learned a lot about reading references as I was completely new to p5js and I also learned a lot about layouts in HTML. I also learned how to modularize code more efficiently to avoid repetition.
